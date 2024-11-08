@@ -4,7 +4,7 @@
   "description": "backend-project with node js",
   "main": "index.js",
   "engines": {
-    "node": "20.x"
+    "node": "14.x"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
