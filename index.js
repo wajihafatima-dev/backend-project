@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const User = require('./models/User');
 const connectDB = require('./db/config'); 
-const authRoute = require('./routes/authRoute'); 
+// const authRoute = require('./routes/authRoute'); 
 const productRoute = require('./routes/productRoute'); 
 const cors=require("cors")
 const app = express();
@@ -10,8 +10,9 @@ const bcrypt = require('bcrypt');
 app.use(express.json());
 app.use(cors());
 connectDB();
-app.use('/auth', authRoute);
+// app.use('/auth', authRoute);
 app.use('/products', productRoute);
+
 app.get('/auth', async (req, res) => {
     try {
         const users = await User.find(); 
