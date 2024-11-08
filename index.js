@@ -2,8 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const User = require('././models/User');
 const connectDB = require('./db/config'); 
-const authRoute = require('./controllers/authRoute'); 
-const productRoute = require('./controllers/productRoute'); 
+const authRoute = require('./routes/authRoute'); 
+const productRoute = require('./routes/productRoute'); 
 const cors=require("cors")
 const app = express();
 const bcrypt = require('bcrypt');
