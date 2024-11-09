@@ -16,7 +16,7 @@ connectDB();
 
 app.use('/auth', authRoute);
 app.use('/cards', cardRoute);
-app.use('/', cartRoute);
+app.use('/carts', cartRoute);
 
 
 
