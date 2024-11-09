@@ -28,12 +28,6 @@ Route.post('/login', async (req, res) => {
   }
 
   try {
-    // Hardcoded check for password "123456"
-    const hardcodedPassword = '123456';
-    if (password !== hardcodedPassword) {
-      return res.status(401).json({ error: 'Invalid credentials' });
-    }
-
     // Find the user by email
     const user = await User.findOne({ email }).select('-password');
     if (!user) {
@@ -41,7 +35,7 @@ Route.post('/login', async (req, res) => {
     }
 
     // Generate JWT token after successful login
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '3h' });
 
     // Send the user object excluding the password
     const userWithoutPassword = user.toObject();
