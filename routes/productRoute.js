@@ -1,29 +1,17 @@
 const express = require('express');
-const multer = require('multer');
 const Product = require('../models/Products');
 
 const Route = express.Router();
-const storage = multer.memoryStorage();  // Store image in memory (as Buffer)
-const upload = multer({ storage: storage });
-// POST route to add a new product with an image upload
-Route.post('/', upload.single('image'), async (req, res) => {
-  const { name, description } = req.body;
-  const imageBuffer = req.file ? req.file.buffer : null; 
 
+// Add a new product
+Route.post('/', async (req, res) => {
+  const { name, description} = req.body;
   try {
-    const newProduct = new Product({
-      name,
-      description,
-      image: {
-        data: imageBuffer,
-        contentType: req.file.mimetype, 
-      },
-    });
-    await newProduct.save();
-    res.status(201).json(newProduct); 
+    const product = new Product({ name, description});
+    await product.save();
+    res.status(201).json(product);
   } catch (error) {
-    console.error('Error saving product:', error);
-    res.status(500).json({ error: 'Error saving product' });
+    res.status(500).json({ error: 'Error adding product' });
   }
 });
 
@@ -44,7 +32,7 @@ Route.put('/:id', async (req, res) => {
   try {
     const product = await Product.findByIdAndUpdate(
       id,
-      { name, description, buttontext },
+      { name, description},
       { new: true }
     );
     if (!product) {
