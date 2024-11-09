@@ -1,6 +1,5 @@
 const express = require('express');
 const Product = require('../models/Products');
-
 const Route = express.Router();
 
 // Add a new product

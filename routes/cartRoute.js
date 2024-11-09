@@ -5,11 +5,11 @@ const Route = express.Router();
 
 // Add a new Cart
 Route.post('/cart', async (req, res) => {
-  const { title, description,price} = req.body;
+  const { title, description, price } = req.body;
   try {
-    const Cart = new Cart({ title, description,price});
-    await Cart.save();
-    res.status(201).json(Cart);
+    const newCart = new Cart({ title, description, price });
+    await newCart.save();
+    res.status(201).json(newCart);
   } catch (error) {
     res.status(500).json({ error: 'Error adding Cart' });
   }
