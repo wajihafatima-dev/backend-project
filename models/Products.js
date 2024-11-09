@@ -8,4 +8,4 @@ const ProductSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model('cards', ProductSchema);
+module.exports = mongoose.model('products', ProductSchema);

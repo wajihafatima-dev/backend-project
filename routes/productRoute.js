@@ -28,11 +28,11 @@ Route.get('/', async (req, res) => {
 // Update a product by ID
 Route.put('/:id', async (req, res) => {
   const { id } = req.params;
-  const { name, description, price, inStock } = req.body;
+  const { name, description,buttontext } = req.body;
   try {
     const product = await Product.findByIdAndUpdate(
       id,
-      { name, description, price, inStock },
+      { name, description, buttontext },
       { new: true }
     );
     if (!product) {
