@@ -3,7 +3,7 @@ const express = require('express');
 const User = require('./models/User');
 const connectDB = require('./db/config'); 
 const authRoute = require('./routes/authRoute'); 
-const cardRoute = require('./routes/cardRoute'); 
+const cardRoute = require('./routes/productRoute'); 
 const cors=require("cors")
 const app = express();
 
