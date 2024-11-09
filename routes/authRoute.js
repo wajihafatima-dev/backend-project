@@ -20,29 +20,42 @@ Route.post('/signup', async (req, res) => {
     }
   });
   Route.post('/login', async (req, res) => {
-    const { email, password } = req.body;
-    if (!email || !password) {
-      return res.status(400).json({ error: 'Please enter both email and password' });
-    }
-  
     try {
-      const user = await User.findOne({ email }).select('-password');
-      if (!user) {
-        return res.status(401).json({ error: 'User not found' });
+      let body = req.body;
+      let existingUser = await User.findOne({ email: body.email });
+      if (!existingUser) {
+        res.status(401).send({
+          isSuccessfull: false,
+          data: null,
+          message: "Invalid Credentials",
+        });
+        return;
+      } else {
+        let isCorrectPassword = await bcrypt.compare(
+          body.password,
+          existingUser.password
+        );
+        if (isCorrectPassword) {
+          res.status(200).send({
+            isSuccessfull: true,
+            data: existingUser,
+            token: await jwt.sign(
+              { ...existingUser },
+              process.env.SECURITY_KEY
+            ),
+            message: "User Login Successfully",
+          });
+        }
       }
-      const isMatch = await bcrypt.compare(password, user.password);
-      if (!isMatch) {
-        return res.status(401).json({ error: 'Invalid credentials' });
-      }
-      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-      const userWithoutPassword = user.toObject();
-      delete userWithoutPassword.password;
-      res.json({ message: 'Login successful', user: userWithoutPassword, token });
     } catch (error) {
-      console.error('Error in login:', error);
-      res.status(500).json({ error: 'Error logging in' });
+      console.log(error);
+      res.status(500).send({
+        isSuccessfull: false,
+        data: null,
+        message: "Internal Server Error",
+      });
     }
-  });
+  }),
   
 
 module.exports = Route;
