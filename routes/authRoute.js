@@ -19,38 +19,28 @@ Route.post('/signup', async (req, res) => {
       res.status(500).json({ error: 'Error signing up' });
     }
   });
-Route.post('/login', async (req, res) => {
-  const { email, password } = req.body;
-
-  // Check if email and password are provided
-  if (!email || !password) {
-    return res.status(400).json({ error: 'Please enter both email and password' });
-  }
-
-  try {
-    // Find the user by email
-    const user = await User.findOne({ email }).select('-password');
-    if (!user) {
-      return res.status(401).json({ error: 'User not found' });
+  Route.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+    try {
+      const user = await User.findOne({ email });
+      if (!user) {
+        return res.status(400).json({ message: 'Invalid email or password' });
+      }
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch) {
+        return res.status(400).json({ message: 'Invalid email or password' });
+      }
+      const token = jwt.sign(
+        { userId: user._id }, 
+        process.env.JWT_SECRET, 
+        { expiresIn: '1h' } 
+      );
+      res.json({ token });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Server error' });
     }
-
-    // Generate JWT token after successful login
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '3h' });
-
-    // Send the user object excluding the password
-    const userWithoutPassword = user.toObject();
-    delete userWithoutPassword.password;
-
-    res.json({
-      message: 'Login successful',
-      user: password,
-      token,
-    });
-  } catch (error) {
-    console.error('Error in login:', error);
-    res.status(500).json({ error: 'Error logging in' });
-  }
-});
+  });
   
 
 module.exports = Route;
