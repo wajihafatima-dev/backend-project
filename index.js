@@ -3,7 +3,7 @@ const express = require('express');
 const User = require('./models/User');
 const connectDB = require('./db/config'); 
 const authRoute = require('./routes/authRoute'); 
-const productRoute = require('./routes/productRoute'); 
+const cardRoute = require('./routes/cardRoute'); 
 const cors=require("cors")
 const app = express();
 
@@ -13,7 +13,7 @@ app.use(cors());
 connectDB();
 
 app.use('/auth', authRoute);
-app.use('/products', productRoute);
+app.use('/cards', cardRoute);
 
 app.get('/auth', async (req, res) => {
     try {

@@ -19,7 +19,7 @@ Route.post('/signup', async (req, res) => {
       res.status(500).json({ error: 'Error signing up' });
     }
   });
-  router.post('/login', async (req, res) => {
+Route.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
   // Check if email and password are provided
