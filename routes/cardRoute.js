@@ -7,9 +7,9 @@ const Route = express.Router();
 Route.post('/', async (req, res) => {
   const { name, description, buttontext} = req.body;
   try {
-    const Card = new Card({ name, description, buttontext});
-    await Card.save();
-    res.status(201).json(Card);
+    const cards = new Card({ name, description, buttontext});
+    await cards.save();
+    res.status(201).json(cards);
   } catch (error) {
     res.status(500).json({ error: 'Error adding Card' });
   }
@@ -18,8 +18,8 @@ Route.post('/', async (req, res) => {
 // Get all Cards
 Route.get('/', async (req, res) => {
   try {
-    const Cards = await Card.find();
-    res.json(Cards);
+    const cards = await Card.find();
+    res.json(cards);
   } catch (error) {
     res.status(500).json({ error: 'Error fetching Cards' });
   }
