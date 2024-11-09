@@ -19,43 +19,44 @@ Route.post('/signup', async (req, res) => {
       res.status(500).json({ error: 'Error signing up' });
     }
   });
-  Route.post('/login', async (req, res) => {
-    try {
-      let body = req.body;
-      let existingUser = await User.findOne({ email: body.email });
-      if (!existingUser) {
-        res.status(401).send({
-          isSuccessfull: false,
-          data: null,
-          message: "Invalid Credentials",
-        });
-        return;
-      } else {
-        let isCorrectPassword = await bcrypt.compare(
-          body.password,
-          existingUser.password
-        );
-        if (isCorrectPassword) {
-          res.status(200).send({
-            isSuccessfull: true,
-            data: existingUser,
-            token: await jwt.sign(
-              { ...existingUser },
-              process.env.SECURITY_KEY
-            ),
-            message: "User Login Successfully",
-          });
-        }
-      }
-    } catch (error) {
-      console.log(error);
-      res.status(500).send({
-        isSuccessfull: false,
-        data: null,
-        message: "Internal Server Error",
-      });
+  router.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+
+  // Check if email and password are provided
+  if (!email || !password) {
+    return res.status(400).json({ error: 'Please enter both email and password' });
+  }
+
+  try {
+    // Hardcoded check for password "123456"
+    const hardcodedPassword = '123456';
+    if (password !== hardcodedPassword) {
+      return res.status(401).json({ error: 'Invalid credentials' });
     }
-  }),
+
+    // Find the user by email
+    const user = await User.findOne({ email }).select('-password');
+    if (!user) {
+      return res.status(401).json({ error: 'User not found' });
+    }
+
+    // Generate JWT token after successful login
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    // Send the user object excluding the password
+    const userWithoutPassword = user.toObject();
+    delete userWithoutPassword.password;
+
+    res.json({
+      message: 'Login successful',
+      user: password,
+      token,
+    });
+  } catch (error) {
+    console.error('Error in login:', error);
+    res.status(500).json({ error: 'Error logging in' });
+  }
+});
   
 
 module.exports = Route;
