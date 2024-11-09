@@ -4,6 +4,8 @@ const User = require('./models/User');
 const connectDB = require('./db/config'); 
 const authRoute = require('./routes/authRoute'); 
 const cardRoute = require('./routes/productRoute'); 
+const cartRoute = require('./routes/cartRoute'); 
+
 const cors=require("cors")
 const app = express();
 
@@ -14,6 +16,11 @@ connectDB();
 
 app.use('/auth', authRoute);
 app.use('/cards', cardRoute);
+app.use('/carts', cartRoute);
+
+
+
+
 
 app.get('/auth', async (req, res) => {
     try {
@@ -23,10 +30,6 @@ app.get('/auth', async (req, res) => {
         res.status(500).json({ error: err.message }); 
     }
 });
-
-
-
-
 
 app.get('/', (req, res) => {
     res.send('Welcome to Backend');
