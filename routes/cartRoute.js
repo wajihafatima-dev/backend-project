@@ -4,7 +4,7 @@ const Cart = require('../models/cart');
 const Route = express.Router();
 
 // Add a new Cart
-Route.post('/', async (req, res) => {
+Route.post('/cart', async (req, res) => {
   const { title, description,price} = req.body;
   try {
     const Cart = new Cart({ title, description,price});
@@ -16,7 +16,7 @@ Route.post('/', async (req, res) => {
 });
 
 // Get all Carts
-Route.get('/', async (req, res) => {
+Route.get('/cart', async (req, res) => {
   try {
     const Carts = await Cart.find();
     res.json(Carts);
@@ -26,7 +26,7 @@ Route.get('/', async (req, res) => {
 });
 
 // Update a Cart by ID
-Route.put('/:id', async (req, res) => {
+Route.put('/cart/:id', async (req, res) => {
   const { id } = req.params;
   const { name, description,price} = req.body;
   try {
@@ -45,7 +45,7 @@ Route.put('/:id', async (req, res) => {
 });
 
 // Delete a Cart by ID
-Route.delete('/:id', async (req, res) => {
+Route.delete('/cart/:id', async (req, res) => {
   const {id} = req.params;
   try {
     const Cart = await Cart.findByIdAndDelete(id);
@@ -58,7 +58,7 @@ Route.delete('/:id', async (req, res) => {
   }
 });
 // Get a Cart by ID
-Route.get('/:id', async (req, res) => {
+Route.get('/cart/:id', async (req, res) => {
     try {
     let result=await Cart.findOne({_id:req.params.id})
     if (result) {
@@ -71,7 +71,7 @@ Route.get('/:id', async (req, res) => {
     }
  });
 //search api  
- Route.get('/search/:key', async (req, res) => {
+ Route.get('/cart/search/:key', async (req, res) => {
     let result=await Cart.find({
         "$or":[
             {name:{$regex:req.params.key}}
