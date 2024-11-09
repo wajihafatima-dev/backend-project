@@ -3,10 +3,10 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('./../models/User');
 
-const router = express.Router();
+const Route = express.Router();
 const JWT_SECRET = 'your_jwt_secret';
 
-router.post('/signup', async (req, res) => {
+Route.post('/signup', async (req, res) => {
     const { firstName, lastName, email, password } = req.body;
     try {
       const existingUser = await User.findOne({ email });
@@ -22,7 +22,7 @@ router.post('/signup', async (req, res) => {
     }
   });
 
-router.post('/login', async (req, res) => {
+Route.post('/login', async (req, res) => {
   const { email, password } = req.body;
   if (email&&password) {
     let user=await User.findOne(req.body).select("-password") 
@@ -38,4 +38,4 @@ router.post('/login', async (req, res) => {
   }
 });
 
-module.exports = router;
+module.exports = Route;

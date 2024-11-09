@@ -6,10 +6,12 @@ const authRoute = require('./routes/authRoute');
 const productRoute = require('./routes/productRoute'); 
 const cors=require("cors")
 const app = express();
-const bcrypt = require('bcrypt');
+
 app.use(express.json());
 app.use(cors());
+
 connectDB();
+
 app.use('/auth', authRoute);
 app.use('/products', productRoute);
 
@@ -21,16 +23,6 @@ app.get('/auth', async (req, res) => {
         res.status(500).json({ error: err.message }); 
     }
 });
-
-
-
-
-
-
-
-
-
-
 
 
 

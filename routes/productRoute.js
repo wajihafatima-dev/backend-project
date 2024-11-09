@@ -1,10 +1,10 @@
 const express = require('express');
 const Product = require('../models/Products');
 
-const router = express.Router();
+const Route = express.Router();
 
 // Add a new product
-router.post('/', async (req, res) => {
+Route.post('/', async (req, res) => {
   const { name, description, price} = req.body;
   try {
     const product = new Product({ name, description, price});
@@ -16,7 +16,7 @@ router.post('/', async (req, res) => {
 });
 
 // Get all products
-router.get('/', async (req, res) => {
+Route.get('/', async (req, res) => {
   try {
     const products = await Product.find();
     res.json(products);
@@ -26,7 +26,7 @@ router.get('/', async (req, res) => {
 });
 
 // Update a product by ID
-router.put('/:id', async (req, res) => {
+Route.put('/:id', async (req, res) => {
   const { id } = req.params;
   const { name, description, price, inStock } = req.body;
   try {
@@ -45,7 +45,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // Delete a product by ID
-router.delete('/:id', async (req, res) => {
+Route.delete('/:id', async (req, res) => {
   const {id} = req.params;
   try {
     const product = await Product.findByIdAndDelete(id);
@@ -58,7 +58,7 @@ router.delete('/:id', async (req, res) => {
   }
 });
 // Get a product by ID
-router.get('/:id', async (req, res) => {
+Route.get('/:id', async (req, res) => {
     try {
     let result=await Product.findOne({_id:req.params.id})
     if (result) {
@@ -71,7 +71,7 @@ router.get('/:id', async (req, res) => {
     }
  });
   
-router.get('/search/:key', async (req, res) => {
+ Route.get('/search/:key', async (req, res) => {
     let result=await Product.find({
         "$or":[
             {name:{$regex:req.params.key}}
@@ -79,4 +79,4 @@ router.get('/search/:key', async (req, res) => {
     })
     res.send(result)
  });
-module.exports = router;
+module.exports = Route;
