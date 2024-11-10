@@ -2,71 +2,71 @@ const express = require('express');
 const Cart = require('../models/cart');
 const Route = express.Router();
 
-// Add a new Cart
+// Add a new product
 Route.post('/', async (req, res) => {
-  const { title, description, price } = req.body;
+  const { name, description,price} = req.body;
   try {
-    const Carts = new Cart({ title, description, price });
-    await Carts.save();
-    res.status(201).json(Carts);
+    const carts = new Cart({ name, description,price});
+    await carts.save();
+    res.status(201).json(carts);
   } catch (error) {
-    res.status(500).json({ error: 'Error adding Cart' });
+    res.status(500).json({ error: 'Error adding cart' });
   }
 });
 
-// Get all Carts
+// Get all products
 Route.get('/', async (req, res) => {
   try {
-    const Carts = await Cart.find();
-    res.json(Carts);
+    const carts = await Cart.find();
+    res.json(carts);
   } catch (error) {
-    res.status(500).json({ error: 'Error fetching Carts' });
+    res.status(500).json({ error: 'Error fetching carts' });
   }
 });
 
-// Update a Cart by ID
+// Update a product by ID
 Route.put('/:id', async (req, res) => {
   const { id } = req.params;
   const { name, description,price} = req.body;
   try {
-    const Cart = await Cart.findByIdAndUpdate(
+    const carts = await Cart.findByIdAndUpdate(
       id,
       { name, description,price},
       { new: true }
     );
-    if (!Cart) {
-      return res.status(404).json({ error: 'Cart not found' });
+    if (!carts) {
+      return res.status(404).json({ error: 'Product not found' });
     }
-    res.json(Cart);
+    res.json(carts);
   } catch (error) {
-    res.status(500).json({ error: 'Error updating Cart' });
+    res.status(500).json({ error: 'Error updating product' });
   }
 });
 
-// Delete a Cart by ID
+// Delete a product by ID
 Route.delete('/:id', async (req, res) => {
   const {id} = req.params;
   try {
-    const Cart = await Cart.findByIdAndDelete(id);
-    if (!Cart) {
-      return res.status(404).json({ error: 'Cart not found' });
+    const carts = await Cart.findByIdAndDelete(id);
+    if (!carts) {
+      return res.status(404).json({ error: 'Product not found' });
     }
-    res.json({ message: 'Cart deleted successfully' });
+    res.json({ message: 'Product deleted successfully' });
   } catch (error) {
-    res.status(500).json({ error: 'Error deleting Cart' });
+    res.status(500).json({ error: 'Error deleting product' });
   }
 });
-// Get a Cart by ID
+// Get a product by ID
 Route.get('/:id', async (req, res) => {
     try {
     let result=await Cart.findOne({_id:req.params.id})
     if (result) {
         res.send(result)
     }else{
-        res.send({result:'Error fetching Cart by id'})
+        res.send({result:'Error fetching product by id'})
     }
     } catch (error) {
-      res.status(500).json({ error: 'Error fetching Cart by id' });
+      res.status(500).json({ error: 'Error fetching product by id' });
     }
  });
 //search api  
