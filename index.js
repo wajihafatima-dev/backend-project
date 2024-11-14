@@ -22,7 +22,7 @@ const imageSchema = new mongoose.Schema({
     url: String,
   });
   
-  const Image = mongoose.model("Image", imageSchema);
+  const Image = mongoose.models.Image || mongoose.model("Image", imageSchema);
   
   // Configure Cloudinary
   cloudinary.config({
