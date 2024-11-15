@@ -1,33 +1,43 @@
 const express = require('express');
 const Cart = require('../models/cart');
-const router = express.Router();
+const cloudinary = require('cloudinary').v2;
 const multer = require('multer');
+const multerStorageCloudinary = require('multer-storage-cloudinary').CloudinaryStorage;
+const router = express.Router();
 
-// Multer configuration for file uploads
-const upload = multer({ dest: 'uploads/' });
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: 'your-cloud-name',  // Replace with your Cloudinary cloud name
+  api_key: 'your-api-key',        // Replace with your Cloudinary API key
+  api_secret: 'your-api-secret',  // Replace with your Cloudinary API secret
+});
 
-// Add a new cart item
+const storage = new multerStorageCloudinary({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'cart-images', 
+    allowedFormats: ['jpg', 'jpeg', 'png', 'gif'], 
+  },
+});
+
+const upload = multer({ storage: storage });
+
 router.post('/', upload.single('image'), async (req, res) => {
   try {
     const { name, price, description } = req.body;
 
-    // Log the uploaded file and request body
     console.log('File:', req.file);
     console.log('Body:', req.body);
 
-    // Validate file upload
     if (!req.file) {
       return res.status(400).json({ error: 'Image file is required' });
     }
-
-    const image = req.file.path;
-
-    // Create a new cart item
+    const image = req.file.path;  
     const newItem = new Cart({
       name,
       price,
       description,
-      image,
+      image,  
     });
 
     const savedItem = await newItem.save();
@@ -67,10 +77,10 @@ router.get('/:id', async (req, res) => {
 router.put('/:id', upload.single('image'), async (req, res) => {
   try {
     const { name, description, price } = req.body;
-    const image = req.file ? req.file.path : undefined; // Only update image if a new one is uploaded
+    const image = req.file ? req.file.path : undefined;  // Use the new image if uploaded
 
     const updatedData = { name, description, price };
-    if (image) updatedData.image = image; // Add image only if it's provided
+    if (image) updatedData.image = image;  // Update the image if a new one is uploaded
 
     const updatedCart = await Cart.findByIdAndUpdate(req.params.id, updatedData, { new: true });
     if (!updatedCart) {
