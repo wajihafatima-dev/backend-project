@@ -5,11 +5,10 @@ const multer = require('multer');
 const multerStorageCloudinary = require('multer-storage-cloudinary').CloudinaryStorage;
 const router = express.Router();
 
-// Configure Cloudinary
 cloudinary.config({
-  cloud_name: 'your-cloud-name',  // Replace with your Cloudinary cloud name
-  api_key: 'your-api-key',        // Replace with your Cloudinary API key
-  api_secret: 'your-api-secret',  // Replace with your Cloudinary API secret
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
+  api_key: process.env.CLOUDINARY_API_KEY,       
+  api_secret: process.env.CLOUDINARY_API_SECRET,  
 });
 
 const storage = new multerStorageCloudinary({
