@@ -24,7 +24,7 @@ const upload = multer({ storage: storage });
 
 router.post('/', upload.single('image'), async (req, res) => {
   try {
-    const { name, price, description,quantity } = req.body;
+    const { name, price, description,quantity,size} = req.body;
 
     console.log('File:', req.file);
     console.log('Body:', req.body);
@@ -37,6 +37,7 @@ router.post('/', upload.single('image'), async (req, res) => {
       name,
       price,
       description,
+      size,
       image,  
       quantity
     });
@@ -63,10 +64,10 @@ router.get('/', async (req, res) => {
 // Update a cart item by ID
 router.put('/:id', upload.single('image'), async (req, res) => {
   try {
-    const { name, description, price ,quantity} = req.body;
+    const { name, description, price ,quantity,size} = req.body;
     const image = req.file ? req.file.path : undefined;  // Use the new image if uploaded
 
-    const updatedData = { name, description, price ,quantity};
+    const updatedData = { name, description, price ,quantity,size};
     if (image) updatedData.image = image;  // Update the image if a new one is uploaded
 
     const updatedCart = await AddToCart.findByIdAndUpdate(req.params.id, updatedData, { new: true });
