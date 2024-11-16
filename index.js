@@ -5,6 +5,8 @@ const connectDB = require('./db/config');
 const authRoute = require('./routes/authRoute'); 
 const cardRoute = require('./routes/productRoute'); 
 const cartRoute = require('./routes/cartRoute'); 
+const addToCartRoute = require('./routes/addToCart'); 
+
 // const multer = require("multer");
 const app = express();
 // const Image = require('./models/Image'); 
@@ -40,6 +42,7 @@ connectDB();
 app.use('/auth', authRoute);
 app.use('/cards', cardRoute);
 app.use('/carts', cartRoute);
+app.use('/addtocarts', addToCartRoute);
 
 
 

@@ -2,6 +2,7 @@ const express = require('express');
 const Cart = require('../models/cart');
 const cloudinary = require('cloudinary').v2;
 const multer = require('multer');
+const AddToCart = require('../models/AddToCart');
 const multerStorageCloudinary = require('multer-storage-cloudinary').CloudinaryStorage;
 const router = express.Router();
 
@@ -23,7 +24,7 @@ const upload = multer({ storage: storage });
 
 router.post('/', upload.single('image'), async (req, res) => {
   try {
-    const { name, price, description } = req.body;
+    const { name, price, description,quantity } = req.body;
 
     console.log('File:', req.file);
     console.log('Body:', req.body);
@@ -32,11 +33,12 @@ router.post('/', upload.single('image'), async (req, res) => {
       return res.status(400).json({ error: 'Image file is required' });
     }
     const image = req.file.path;  
-    const newItem = new Cart({
+    const newItem = new AddToCart({
       name,
       price,
       description,
       image,  
+      quantity
     });
 
     const savedItem = await newItem.save();
@@ -50,7 +52,7 @@ router.post('/', upload.single('image'), async (req, res) => {
 // Get all cart items
 router.get('/', async (req, res) => {
   try {
-    const carts = await Cart.find();
+    const carts = await AddToCart.find();
     res.json(carts);
   } catch (error) {
     console.error('Error fetching carts:', error);
@@ -58,30 +60,16 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Get a single cart item by ID
-router.get('/:id', async (req, res) => {
-  try {
-    const cart = await Cart.findById(req.params.id);
-    if (!cart) {
-      return res.status(404).json({ error: 'Product not found' });
-    }
-    res.json(cart);
-  } catch (error) {
-    console.error('Error fetching product by ID:', error);
-    res.status(500).json({ error: 'Error fetching product by ID' });
-  }
-});
-
 // Update a cart item by ID
 router.put('/:id', upload.single('image'), async (req, res) => {
   try {
-    const { name, description, price } = req.body;
+    const { name, description, price ,quantity} = req.body;
     const image = req.file ? req.file.path : undefined;  // Use the new image if uploaded
 
-    const updatedData = { name, description, price };
+    const updatedData = { name, description, price ,quantity};
     if (image) updatedData.image = image;  // Update the image if a new one is uploaded
 
-    const updatedCart = await Cart.findByIdAndUpdate(req.params.id, updatedData, { new: true });
+    const updatedCart = await AddToCart.findByIdAndUpdate(req.params.id, updatedData, { new: true });
     if (!updatedCart) {
       return res.status(404).json({ error: 'Product not found' });
     }
@@ -95,7 +83,7 @@ router.put('/:id', upload.single('image'), async (req, res) => {
 // Delete a cart item by ID
 router.delete('/:id', async (req, res) => {
   try {
-    const cart = await Cart.findByIdAndDelete(req.params.id);
+    const cart = await AddToCart.findByIdAndDelete(req.params.id);
     if (!cart) {
       return res.status(404).json({ error: 'Product not found' });
     }
@@ -103,22 +91,6 @@ router.delete('/:id', async (req, res) => {
   } catch (error) {
     console.error('Error deleting product:', error);
     res.status(500).json({ error: 'Error deleting product' });
-  }
-});
-
-// Search for cart items
-router.get('/search/:key', async (req, res) => {
-  try {
-    const result = await Cart.find({
-      "$or": [
-        { name: { $regex: req.params.key, $options: 'i' } }, // Case-insensitive search
-        { description: { $regex: req.params.key, $options: 'i' } }
-      ]
-    });
-    res.json(result);
-  } catch (error) {
-    console.error('Error searching products:', error);
-    res.status(500).json({ error: 'Error searching products' });
   }
 });
 
